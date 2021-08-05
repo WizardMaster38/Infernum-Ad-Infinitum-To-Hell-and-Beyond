@@ -133,15 +133,34 @@ class Main {
         return(removedSlime instanceof Slime);
     }
 
-    public static void main(String[] args) {
-        Scanner input = new Scanner(System.in);
-
-        String mainMenu = "Main Menu\nWhat would you like to do?\nStart Game\nLoad Game\nSettings\nExit";
-
-        System.out.println(mainMenu);
-        String nextInput = input.nextLine();
-        if (nextInput.toLowerCase() == "start game") {
-            System.out.println("Game starting..");
+    static String mainMenu() {
+        Scanner input = new Scanner(System.in); // gets input detector, allows to get input from the user.
+        String mainMenu = "Main Menu\nWhat would you like to do?\nStart Game\nLoad Game\nSettings\nExit"; // main menu text
+        System.out.println(mainMenu); // prints text above
+        String nextInput = input.nextLine(); // takes the input from the user
+        nextInput = nextInput.toLowerCase();
+        input.close(); // always good practice to close scanner when done
+        if (nextInput == "start game") { // checking if the input from above is "start game", in which case, starts the game
+            System.out.println("Game starting.."); //filler
+            return("start new game");
+        } 
+        else if (nextInput == "load game") {
+            return("load game"); //spacer used for future reference, just need the block here
+        } 
+        else if (nextInput == "settings") {
+            return("Settings"); //same as above
         }
+        else if (nextInput == "exit") {
+            System.exit(1); //terminates code
+        }
+        else {
+            System.out.println(String.format("Command not recognized! Error Code: 404 | %s not found!", nextInput));
+            return(mainMenu());
+            
+        }
+    }
+
+    public static void main(String[] args) {
+        String action = mainMenu();   
     }
 }
