@@ -1,5 +1,6 @@
 import java.util.Random;
 import java.util.HashMap;
+import java.util.Scanner;
 
 abstract class Enemy {
     Random rand = new Random();
@@ -133,8 +134,14 @@ class Main {
     }
 
     public static void main(String[] args) {
-        generateSlimes(100);
-        generateSlimes(100);
-        getStats();
+        Scanner input = new Scanner(System.in);
+
+        String mainMenu = "Main Menu\nWhat would you like to do?\nStart Game\nLoad Game\nSettings\nExit";
+
+        System.out.println(mainMenu);
+        String nextInput = input.nextLine();
+        if !(String.toLowerCase(nextInput) == "start game" || String.toLowerCase(nextInput) == "load game" || String.toLowerCase(nextInput) == "settings" || String.toLowerCase(nextInput) == "exit") {
+            System.out.println("Invalid input.");
+        }
     }
 }
