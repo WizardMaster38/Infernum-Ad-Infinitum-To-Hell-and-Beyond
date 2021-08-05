@@ -140,8 +140,8 @@ class Main {
 
         System.out.println(mainMenu);
         String nextInput = input.nextLine();
-        if ((nextInput.toLowerCase() == "start game") || (nextInput.toLowerCase() == "load game") || (nextInput.toLowerCase() == "settings") || (nextInput.toLowerCase() == "exit")) {
-            System.out.println(nextInput + " is an invalid input.");
+        if (nextInput.toLowerCase() == "start game") {
+            System.out.println("Game starting..");
         }
     }
 }
