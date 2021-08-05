@@ -127,24 +127,14 @@ class Main {
         return slimes.get("slime" + slimeNumber);
     }
 
-    static void removeSlime(int slimeNumber) {
-        slimes.remove("slime" + slimeNumber);
-        System.out.println("slime" + slimeNumber + " removed");
+    static boolean removeSlime(int slimeNumber) {
+        Slime removedSlime = slimes.remove("slime" + slimeNumber);
+        return(removedSlime instanceof Slime);
     }
 
     public static void main(String[] args) {
-        generateSlimes(1000);
-        generateSlimes(1000);
-        for (int i = 1; i <= slimes.size(); i++) {
-            Slime testSlime = getSlime(i);
-            removeSlime(i);
-            try {
-                System.out.println(testSlime.nameOfEnemy);
-            }
-            catch (Exception e) {
-                System.out.println(e);
-            }
-        }
+        generateSlimes(100);
+        generateSlimes(100);
         getStats();
     }
 }
