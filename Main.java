@@ -134,36 +134,28 @@ class Main {
         return(removedSlime instanceof Slime);
     }
     
-    static String checkInput(String input) {
-        String action = "null";
-        if (input == "start game") { 
-            System.out.println("Game starting..");
-            action = "start new game";
-        } else if (input == "load game") {
-            action = "load game";
-        } else if (input == "settings") {
-            action = "settings";
-        } else if (input == "exit") {
-            System.exit(1);
-        } else {
-            System.out.println(String.format("Command not recognized! Error Code: 404 | %s not found!", input));
-            String newInput = mainMenu();
-            action = newInput;
-        }
-        return(action);
-    }
-
     static String mainMenu() {
         String mainMenu = "----- MAIN MENU -----\nWhat would you like to do?\n------------\nStart Game\nLoad Game\nSettings\nExit"; 
         System.out.println(mainMenu);
         String nextInput = input.nextLine();
         nextInput = nextInput.toLowerCase();
-        System.out.println(nextInput);
-        String action = checkInput(nextInput);
-        return(action);
+        switch (nextInput) {
+            case "start game":
+                return("start game");
+            case "load game":
+                return("load game");
+            case "settings":
+                return("settings");
+            case "exit":
+                System.exit(1);
+            default: 
+                System.out.println("Invalid input. Please try again.");
+                return(mainMenu());
+        }
     }
 
     public static void main(String[] args) {
-        String action = mainMenu();   
+        String action = mainMenu();
+        System.out.println(action);
     }
 }
