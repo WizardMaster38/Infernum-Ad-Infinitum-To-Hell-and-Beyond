@@ -51,6 +51,7 @@ class Slime extends Enemy {
 
 class Main {
     static Random rand = new Random();
+    static Scanner input = new Scanner(System.in);
     static HashMap<String, Slime> slimes = new HashMap<>();
     static HashMap<String, Double> slimeStatAverages = new HashMap<>();
 
@@ -132,32 +133,34 @@ class Main {
         Slime removedSlime = slimes.remove("slime" + slimeNumber);
         return(removedSlime instanceof Slime);
     }
+    
+    static String checkInput(String input) {
+        String action = "null";
+        if (input == "start game") { 
+            System.out.println("Game starting..");
+            action = "start new game";
+        } else if (input == "load game") {
+            action = "load game";
+        } else if (input == "settings") {
+            action = "settings";
+        } else if (input == "exit") {
+            System.exit(1);
+        } else {
+            System.out.println(String.format("Command not recognized! Error Code: 404 | %s not found!", input));
+            String newInput = mainMenu();
+            action = newInput;
+        }
+        return(action);
+    }
 
     static String mainMenu() {
-        Scanner input = new Scanner(System.in); // gets input detector, allows to get input from the user.
-        String mainMenu = "Main Menu\nWhat would you like to do?\nStart Game\nLoad Game\nSettings\nExit"; // main menu text
-        System.out.println(mainMenu); // prints text above
-        String nextInput = input.nextLine(); // takes the input from the user
+        String mainMenu = "----- MAIN MENU -----\nWhat would you like to do?\n------------\nStart Game\nLoad Game\nSettings\nExit"; 
+        System.out.println(mainMenu);
+        String nextInput = input.nextLine();
         nextInput = nextInput.toLowerCase();
-        input.close(); // always good practice to close scanner when done
-        if (nextInput == "start game") { // checking if the input from above is "start game", in which case, starts the game
-            System.out.println("Game starting.."); //filler
-            return("start new game");
-        } 
-        else if (nextInput == "load game") {
-            return("load game"); //spacer used for future reference, just need the block here
-        } 
-        else if (nextInput == "settings") {
-            return("Settings"); //same as above
-        }
-        else if (nextInput == "exit") {
-            System.exit(1); //terminates code
-        }
-        else {
-            System.out.println(String.format("Command not recognized! Error Code: 404 | %s not found!", nextInput));
-            return(mainMenu());
-            
-        }
+        System.out.println(nextInput);
+        String action = checkInput(nextInput);
+        return(action);
     }
 
     public static void main(String[] args) {
