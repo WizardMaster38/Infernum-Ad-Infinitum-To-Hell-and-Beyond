@@ -6,21 +6,20 @@ abstract class Enemy {
     Random rand = new Random();
     double health;
     int level;
-    String nameOfEnemy;
+    String nameOfEnemy, description;
     String[] names = {"Bob", "Jeff", "Jess", "Alyssa", "Chad"};
-    abstract void intilizeValues(); 
+    abstract void initilizeValues(); 
 }
 
 class Player {
     Random rand = new Random();
     public double health;
-    public int level;
-    public int ammo;
+    public int level, ammo;
     public String nameOfPlayer;
 }
 
 class Slime extends Enemy {
-    void intilizeValues() {
+    void initilizeValues() {
         int nameNumber = rand.nextInt(101);
         if (nameNumber >= 0 && nameNumber <= 23) {
             nameOfEnemy = names[0];
@@ -45,7 +44,13 @@ class Slime extends Enemy {
         }        
     }
     Slime() {
-        intilizeValues();
+        initilizeValues();
+    }
+}
+
+class FireSlime extends Slime {
+    FireSlime() {
+        initilizeValues();
     }
 }
 
@@ -154,7 +159,29 @@ class Main {
         }
     }
 
+    static void settingsMenu() {
+        return; 
+    }
+
+    //static void 
+
+
+
+
+
     public static void main(String[] args) {
+        System.out.println("Please wait, we are initilizing everything!");
+        String[] initilizingValuesText = {"Intilizing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
+        for (int i = 1; i < 20; i = i) {
+            int numberOfSeconds = rand.nextInt(4) + 1;
+            try {
+                Thread.sleep(numberOfSeconds * 1000);
+            } catch (InterruptedException ie) {
+                Thread.currentThread().interrupt();
+            }
+            i += numberOfSeconds;
+            System.out.println(initilizingValuesText[rand.nextInt(initilizingValuesText.length)] + i + " seconds have passed.");
+        }
         String action = mainMenu();
         System.out.println(action);
     }
