@@ -142,7 +142,7 @@ class Main {
     static Scanner input = new Scanner(System.in);
     
     static String mainMenu() {
-        String mainMenu = "----- MAIN MENU -----\nWhat would you like to do?\n------------\nStart Game\nLoad Game\nSettings\nExit"; 
+        String mainMenu = "----- MAIN MENU -----\nWhat would you like to do?\n------------\nStart Game\nLoad Game (Coming soon! (Hopefully))\nSettings\nExit"; 
         System.out.println(mainMenu);
         String nextInput = input.nextLine();
         nextInput = nextInput.toLowerCase();
@@ -165,28 +165,79 @@ class Main {
         return; 
     }
 
-    static Player createNewPlayer() {
-        Player player = new Player();
-        System.out.println("What is the name of your new character?");
-        player.nameOfPlayer = input.nextLine();
-        System.out.println("What is the gender of your new character? (Male, Female, other)");
-        player.gender = input.nextLine();
-        System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
-        player.pronouns = input.nextLine().split(" ");
-        return(player);
+    static Player createNewPlayer(boolean newCharacter) {
+        if (newCharacter) {Player player = new Player();
+            System.out.println("What is the name of your new character?");
+            player.nameOfPlayer = input.nextLine();
+            System.out.println("What is the gender of your new character? (Male, Female, other)");
+            player.gender = input.nextLine();
+            System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
+            player.pronouns = input.nextLine().split(" ");
+            return(player);
+        }
+        else {
+            Player player = new Player();
+            return player;
+        }
     }
 
-    static void startNewGame() {
-        Player player = createNewPlayer();
-        System.out.println(player.pronouns);
+    static void startNewGame(boolean newGame) {
+        Player player;
+        if (newGame) {
+            player = createNewPlayer(newGame);
+        } else {
+            player = new Player();
+        }
+        
     }
     //static void 
 
+    /*
+    Room A:
+    ____|  |____ 
+   _|          |_
+   _    X  X    _
+    |____  ____|
+        |  |
+    
+    Room B:
+    ____|  |_____
+    |           |
+    |     XX    |_
+    | C          _
+    |___________|
 
+    Room C:
+    ______________
+    | C   C   C  |
+    |     X*     |
+    |___    _____|
+        |  |
+ 
+    Room D:
+
+     _____________
+     |        C|_|
+    _|    X    |_|
+    _     X    |_|
+     |___________|
+    Key:
+    X - Enemy
+    X* - Boss
+    C - Chest
+    C* - Fake Chest
+    */
 
 
 
     public static void main(String[] args) {
+        String a = System.getenv("A");
+        String b = System.getenv("B");
+        String c = System.getenv("C");
+        String d = System.getenv("D");
+        System.out.println(a);
+        System.out.println(b);
+        System.out.println(c + "\n" + a + "\n" + b + d);
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
         for (int i = 1; i < 20; i = i) {
@@ -200,12 +251,13 @@ class Main {
             System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i + " seconds have passed.");
         }
         String action = mainMenu();
-        System.out.println(action);
+        //System.out.println(action);
         switch (action) {
             case "start game":
-                startNewGame();
+                startNewGame(true);
             case "load game":
-                //return("load game");
+                System.out.println("Function not available yet! Please select another option.");
+                System.exit(0);
             case "settings":
                 //return("settings");
         }
