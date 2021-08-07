@@ -8,18 +8,21 @@ abstract class Enemy {
     int level;
     String nameOfEnemy, description;
     String[] names = {"Bob", "Jeff", "Jess", "Alyssa", "Chad"};
-    abstract void initilizeValues(); 
+    abstract void initializeValues(); 
 }
 
 class Player {
     Random rand = new Random();
     public double health;
     public int level, ammo;
-    public String nameOfPlayer;
+    public String nameOfPlayer, gender;
+    public String[] pronouns = new String[2];
 }
 
 class Slime extends Enemy {
-    void initilizeValues() {
+    static HashMap<String, Slime> slimes = new HashMap<>();
+    static HashMap<String, Double> slimeStatAverages = new HashMap<>();
+    void initializeValues() {
         int nameNumber = rand.nextInt(101);
         if (nameNumber >= 0 && nameNumber <= 23) {
             nameOfEnemy = names[0];
@@ -44,22 +47,9 @@ class Slime extends Enemy {
         }        
     }
     Slime() {
-        initilizeValues();
+        initializeValues();
     }
-}
-
-class FireSlime extends Slime {
-    FireSlime() {
-        initilizeValues();
-    }
-}
-
-class Main {
-    static Random rand = new Random();
-    static Scanner input = new Scanner(System.in);
-    static HashMap<String, Slime> slimes = new HashMap<>();
-    static HashMap<String, Double> slimeStatAverages = new HashMap<>();
-
+    
     static void addSlime(Slime slimeInstance) {
         try {
             int slimeNumber = slimes.size() + 1;
@@ -138,6 +128,18 @@ class Main {
         Slime removedSlime = slimes.remove("slime" + slimeNumber);
         return(removedSlime instanceof Slime);
     }
+
+}
+
+class FireSlime extends Slime {
+    FireSlime() {
+        initializeValues();
+    }
+}
+
+class Main {
+    static Random rand = new Random();
+    static Scanner input = new Scanner(System.in);
     
     static String mainMenu() {
         String mainMenu = "----- MAIN MENU -----\nWhat would you like to do?\n------------\nStart Game\nLoad Game\nSettings\nExit"; 
@@ -163,6 +165,21 @@ class Main {
         return; 
     }
 
+    static Player createNewPlayer() {
+        Player player = new Player();
+        System.out.println("What is the name of your new character?");
+        player.nameOfPlayer = input.nextLine();
+        System.out.println("What is the gender of your new character? (Male, Female, other)");
+        player.gender = input.nextLine();
+        System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
+        player.pronouns = input.nextLine().split(" ");
+        return(player);
+    }
+
+    static void startNewGame() {
+        Player player = createNewPlayer();
+        System.out.println(player.pronouns);
+    }
     //static void 
 
 
@@ -170,8 +187,8 @@ class Main {
 
 
     public static void main(String[] args) {
-        System.out.println("Please wait, we are initilizing everything!");
-        String[] initilizingValuesText = {"Intilizing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
+        System.out.println("Please wait, we are initializing everything!");
+        String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
             try {
@@ -180,9 +197,17 @@ class Main {
                 Thread.currentThread().interrupt();
             }
             i += numberOfSeconds;
-            System.out.println(initilizingValuesText[rand.nextInt(initilizingValuesText.length)] + i + " seconds have passed.");
+            System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i + " seconds have passed.");
         }
         String action = mainMenu();
         System.out.println(action);
+        switch (action) {
+            case "start game":
+                startNewGame();
+            case "load game":
+                //return("load game");
+            case "settings":
+                //return("settings");
+        }
     }
 }
