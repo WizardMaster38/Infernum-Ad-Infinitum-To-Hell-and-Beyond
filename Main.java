@@ -14,7 +14,7 @@ abstract class Enemy {
 class Player {
     Random rand = new Random();
     public double health;
-    public int level, ammo;
+    public int level;
     public String nameOfPlayer, gender;
     public String[] pronouns = new String[2];
 }
@@ -181,38 +181,30 @@ class Main {
         }
     }
 
-    static void startNewGame(boolean newGame) {
-        Player player;
-        if (newGame) {
-            player = createNewPlayer(newGame);
-        } else {
-            player = new Player();
-        }
-        
-    }
+    
     //static void 
 
     /*
     Room A:
-    ____|  |____ 
-   _|          |_
-   _    X  X    _
-    |____  ____|
-        |  |
+    ___|  |_____ 
+    |          | 
+   _|   X  X   |_
+   ____|  |______
+       |  |      
     
     Room B:
-    ____|  |_____
-    |           |
+    ____|  |_____  
+    |           | 
     |     XX    |_
     | C          _
-    |___________|
+    |___________| 
 
     Room C:
-    ______________
-    | C   C   C  |
-    |     X*     |
-    |___    _____|
-        |  |
+______________
+| C   C   C  |
+|     X*     |
+|____  ______| 
+    |  |      
  
     Room D:
 
@@ -228,18 +220,78 @@ class Main {
     C* - Fake Chest
     */
 
+    static String addTwoRooms(String firstRoom, String secondRoom) {
+        
+        String newRoom = "";
 
+        String[] roomFirst = firstRoom.split("\n");
+        String[] roomSecond = secondRoom.split("\n"); 
 
-    public static void main(String[] args) {
+        for (int i = 0; i < 5; i++) {
+            String string = roomFirst[i].concat(roomSecond[i]);
+            string = string.concat("\n");
+            newRoom = newRoom.concat(string);
+        }        
+
+        return(newRoom);
+    }
+
+    static String generateMap(int Width, int Height, int Floors, String Mode) {
         String a = System.getenv("A");
         String b = System.getenv("B");
         String c = System.getenv("C");
         String d = System.getenv("D");
-        System.out.println(a);
-        System.out.println(b);
-        System.out.println(c + "\n" + a + "\n" + b + d);
+        String e = System.getenv("E(mpty)");
+        String c2 = System.getenv("C2");
+        String[] allowedRooms = new String[6];
+        String[] RoomGenerator = new String[100];
+        switch(Mode) {
+            case "easy":
+                allowedRooms[0] = a;
+                allowedRooms[1] = b;
+                allowedRooms[2] = e;
+                allowedRooms[3] = c;
+            case "medium":
+                allowedRooms[0] = a;
+                allowedRooms[1] = b;
+                allowedRooms[2] = c;
+                allowedRooms[3] = d;
+                allowedRooms[4] = e;
+            case "hard":
+                allowedRooms[0] = a;
+                allowedRooms[1] = b;
+                allowedRooms[2] = c;
+                allowedRooms[3] = c2;
+                allowedRooms[4] = d;
+                allowedRooms[5] = e;
+        }
+        
+        
+        return("a");
+
+    }
+
+    static void startNewGame(boolean newGame) {
+        Player player;
+        if (newGame) {
+            player = createNewPlayer(newGame);
+        } else {
+            player = new Player();
+        }
+        
+    }
+
+    public static void main(String[] args) {
+        /*String a = System.getenv("A");
+        String b = System.getenv("B");
+        String c = System.getenv("C");
+        String d = System.getenv("D");
+        String e = System.getenv("E(mpty)");
+        String c2 = System.getenv("C2");*/
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
+        
+        
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
             try {
@@ -248,13 +300,14 @@ class Main {
                 Thread.currentThread().interrupt();
             }
             i += numberOfSeconds;
-            System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i + " seconds have passed.");
+            System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i * 5 + "%");
         }
         String action = mainMenu();
         //System.out.println(action);
         switch (action) {
             case "start game":
                 startNewGame(true);
+                break;
             case "load game":
                 System.out.println("Function not available yet! Please select another option.");
                 System.exit(0);
