@@ -1,7 +1,34 @@
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Scanner;
-import java.util.ArrayList;
+//import java.util.ArrayList;
+
+enum Rarity {
+    COMMON, UNCOMMON, RARE, SUPER_RARE, LEGENDARY, MYTHICAL;
+
+    public String getRarity() {
+        switch(this) {
+            case COMMON:
+                return "common";
+            case UNCOMMON:
+                return "uncommon";
+            case RARE:
+                return "rare";
+            case SUPER_RARE:
+                return "super rare";
+            case LEGENDARY:
+                return "legendary";
+            case MYTHICAL:
+                return "mythical";
+            default: 
+                return null;
+        }
+    }
+}
+
+enum Type {
+    CONSUMABLE, USABLE, EQUIPPABLE, THROWABLE
+}
 
 abstract class Enemy {
     Random rand = new Random();
@@ -11,6 +38,23 @@ abstract class Enemy {
     String[] names = {"Bob", "Jeff", "Jess", "Alyssa", "Chad"};
     abstract void initializeValues(); 
 }
+
+class Item {
+    String name, description;
+    int levelNeeded;
+    boolean equippable, useable, consumeable;
+    Type type;
+    Rarity rarity;
+
+}
+
+class WitchsBestFriend extends Item {{
+    name = "Witch's Best Friend";
+    description = "It is a staff with a obvious phallic shape at the end, it can shoot magic missiles";
+    levelNeeded = 69;
+    type = Type.USABLE;
+    rarity = Rarity.MYTHICAL;
+}}
 
 class Player {
     Random rand = new Random();
@@ -175,6 +219,8 @@ class Main {
             player.gender = input.nextLine();
             System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
             player.pronouns = input.nextLine().split(" ");
+            player.level = 1;
+            player.health = 1;
             return(player);
         }
         else {
@@ -183,7 +229,13 @@ class Main {
         }
     }
 
-    
+    static Item[] openChest(String type, int amount) {
+        Item[] itemTable = new Item[5];
+        WitchsBestFriend WBF = new WitchsBestFriend();
+        itemTable[1] = WBF;
+        return(itemTable);
+    }
+
     //static void 
 
     /*
@@ -221,6 +273,8 @@ ______________
     C - Chest
     C* - Fake Chest
     */
+
+    
 
     static String addTwoRooms(String firstRoom, String secondRoom) {
         
@@ -367,9 +421,10 @@ ______________
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
         
-        System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
-        System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
-        System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
+        //System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
+        //System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
+        //System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
+        System.out.println(openChest("normal", 2)[1].rarity.getRarity());
 
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
