@@ -1,6 +1,7 @@
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Scanner;
+import java.util.ArrayList;
 
 abstract class Enemy {
     Random rand = new Random();
@@ -166,7 +167,8 @@ class Main {
     }
 
     static Player createNewPlayer(boolean newCharacter) {
-        if (newCharacter) {Player player = new Player();
+        if (newCharacter) {
+            Player player = new Player();
             System.out.println("What is the name of your new character?");
             player.nameOfPlayer = input.nextLine();
             System.out.println("What is the gender of your new character? (Male, Female, other)");
@@ -236,39 +238,113 @@ ______________
         return(newRoom);
     }
 
-    static String generateMap(int Width, int Height, int Floors, String Mode) {
+    static String generateMap(int Width, int Height, int Floors, String Mode) { 
         String a = System.getenv("A");
-        String b = System.getenv("B");
+        String b = System.getenv("B"); 
         String c = System.getenv("C");
         String d = System.getenv("D");
         String e = System.getenv("E(mpty)");
         String c2 = System.getenv("C2");
+        String fullMapOne = "";
+        String fullMapTwo = "";
+        String fullMapThree = "";
+        String fullMapFour = "";
+        String fullMapFive = "";
+        String fullMap = "";
         String[] allowedRooms = new String[6];
-        String[] RoomGenerator = new String[100];
+        int[][] RoomGenerator = new int[Height][Width];
         switch(Mode) {
             case "easy":
                 allowedRooms[0] = a;
                 allowedRooms[1] = b;
-                allowedRooms[2] = e;
-                allowedRooms[3] = c;
+                allowedRooms[2] = c;
+                allowedRooms[3] = e;
+                break;
             case "medium":
                 allowedRooms[0] = a;
                 allowedRooms[1] = b;
                 allowedRooms[2] = c;
-                allowedRooms[3] = d;
-                allowedRooms[4] = e;
+                allowedRooms[3] = e;
+                allowedRooms[4] = d;
+                break;
             case "hard":
                 allowedRooms[0] = a;
                 allowedRooms[1] = b;
                 allowedRooms[2] = c;
-                allowedRooms[3] = c2;
+                allowedRooms[3] = e;
                 allowedRooms[4] = d;
-                allowedRooms[5] = e;
+                allowedRooms[5] = c2;
+                break;
         }
-        
-        
-        return("a");
-
+        int bossRooms = 0;
+        for (int i = 0; i < Height; i++) { // X dimension
+            for (int j = 0; j < Width; j++) { // Y dimension
+                try {
+                    RoomGenerator[i][j] = rand.nextInt(6); // generates the numbers
+                } catch (Exception error2) {
+                    System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error2 + ")");
+                    System.exit(1);
+                }
+                if (RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5) {
+                    if (bossRooms < 1) {
+                        bossRooms++;
+                    } else if (bossRooms >= 1) {
+                        RoomGenerator[i][j] = 3;
+                    }
+                }
+                if (allowedRooms[RoomGenerator[i][j]] == null) {
+                    if (j > 0) {
+                        j--;
+                    }
+                    else if (j == 0 && !(i == 0)) {
+                        i--;
+                        j = Width;
+                    }
+                    else if (j == 0 && i == 0) {
+                        j--;
+                    }
+                } else{
+                    try {
+                        System.out.println("Room " + RoomGenerator[i][j] + "Position: " + i + ", " + j + ".\n" + allowedRooms[RoomGenerator[i][j]]);
+                    } catch(Exception error) { // debugging
+                        System.out.println(error);
+                    }
+                    if (j == 1 && i == 0) {
+                        fullMapOne = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapOne);
+                    } else if (j > 1 && i == 0) {
+                        fullMapOne = addTwoRooms(fullMapOne, allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapOne);
+                    } else if (j == 1 && i == 1) {
+                        fullMapTwo = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapTwo);
+                    } else if (j > 1 && i == 1) {
+                        fullMapTwo = addTwoRooms(fullMapTwo, allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapTwo);
+                    } else if (j == 1 && i == 2) {
+                        fullMapThree = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapThree);
+                    } else if (j > 1 && i == 2) {
+                        fullMapThree = addTwoRooms(fullMapThree, allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapThree);
+                    } else if (j == 1 && i == 3) {
+                        fullMapFour = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapFour);
+                    } else if (j > 1 && i == 3) {
+                        fullMapFour = addTwoRooms(fullMapFour, allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapFour);
+                    } else if (j == 1 && i == 4) {
+                        fullMapFive = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapFive);
+                    } else if (j > 1 && i == 4) {
+                        fullMapFive = addTwoRooms(fullMapFive, allowedRooms[RoomGenerator[i][j]]);
+                        System.out.println(fullMapFive);
+                    }
+                }
+            }
+        }
+        fullMap = fullMapOne + fullMapTwo + fullMapThree + fullMapFour + fullMapFive;
+        return(fullMap);
     }
 
     static void startNewGame(boolean newGame) {
@@ -291,7 +367,10 @@ ______________
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
         
-        
+        System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
+        System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
+        System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
+
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
             try {
