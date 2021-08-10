@@ -230,10 +230,11 @@ class Main {
     }
 
     static Item[] openChest(String type, int amount) {
-        Item[] itemTable = new Item[5];
-        WitchsBestFriend WBF = new WitchsBestFriend();
-        itemTable[1] = WBF;
-        return(itemTable);
+        Item[] returnedItems = new Item[5];
+
+
+
+        return(returnedItems);
     }
 
     //static void 
@@ -424,7 +425,7 @@ ______________
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
-        System.out.println(openChest("normal", 2)[1].rarity.getRarity());
+        //System.out.println(openChest("normal", 2)[1].rarity.getRarity());
 
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
