@@ -42,10 +42,8 @@ abstract class Enemy {
 class Item {
     String name, description;
     int levelNeeded;
-    boolean equippable, useable, consumeable;
     Type type;
     Rarity rarity;
-
 }
 
 class WitchsBestFriend extends Item {{
