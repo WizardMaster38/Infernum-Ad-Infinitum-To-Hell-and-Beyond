@@ -7,6 +7,8 @@
       <h6>PRE-ALPHA</h6>
       <h1>Current Status</h1>
       <h2>Coding/Scripting</h2>
+      <p><10% Done</p>
+      <p><10% In Progress</p>
     </main>
   </body>
 </html>
