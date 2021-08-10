@@ -68,6 +68,34 @@ class Stick extends Item {
     }
 }
 
+class Slingshot extends Item {
+    public void setDetails() {
+        name = "Hunter's Slingshot";
+        description = "A slingshot for hunting small game.";
+        levelNeeded = 5;
+        type = Type.USABLE;
+        rarity = Rarity.UNCOMMON;
+    }
+    Slingshot() {
+        setDetails();
+    }
+    public int attackMin = 11, attackMax = 23;
+}
+
+class Pistol extends Item {
+    public void setDetails() {
+        name = "Old War Flintlock Pistol";
+        description = "A restored flintlock pistol from the war. Slow to reload, but she packs a punch!";
+        levelNeeded = 20;
+        type = Type.USABLE;
+        rarity = Rarity.SUPER_RARE;
+    }
+    Pistol() {
+        setDetails();
+    }
+    public int attackMin = 53, attackMax = 89;
+}
+
 /*class something extends Item {
     public void setDetails() {
         name = "";
@@ -282,17 +310,19 @@ class Main {
         }
     }
 
-    static Item[] openChest(String type, int amount) {
-        Item[] returnedItems = new Item[5];
+    static ArrayList<Item> openChest(String type, int amount) {
+        ArrayList<Item> returnedItems = new ArrayList<Item>();
         int howManyItems = rand.nextInt(5) + 1;
         System.out.println(howManyItems);
         double[] chances = new double[6];
         Stick stick = new Stick();
         WitchsBestFriend WitchsBestFriend = new WitchsBestFriend();
+        Slingshot Slingshot = new Slingshot();
+        Pistol pistol = new Pistol();
         Item[] commonItems = {stick};
-        Item[] uncommonItems = {};
+        Item[] uncommonItems = {Slingshot};
         Item[] rareItems = {};
-        Item[] superRareItems = {};
+        Item[] superRareItems = {pistol};
         Item[] legendaryItems = {};
         Item[] mythicalItems = {WitchsBestFriend};
         Item[] itemSet;
@@ -304,6 +334,13 @@ class Main {
                 chances[3] = 2.5;
                 chances[4] = 0;
                 chances[5] = 0;
+            case "uncommon":
+                chances[0] = 50.0;
+                chances[1] = 37.5;
+                chances[2] = 7.5;
+                chances[3] = 4.5;
+                chances[4] = 0.5;
+                chances[5] = 0.0;
         }    
 
         for (int i = 0; i <= howManyItems - 1; i++) {
@@ -330,50 +367,10 @@ class Main {
                 itemSet = commonItems;
                 randomItemInt = rand.nextInt(itemSet.length);
             }
-            returnedItems[i] = itemSet[randomItemInt];
+            returnedItems.add(itemSet[randomItemInt]);
         }
         return(returnedItems);
     }
-
-    //static void 
-
-    /*
-    Room A:
-    ___|  |_____ 
-    |          | 
-   _|   X  X   |_
-   ____|  |______
-       |  |      
-    
-    Room B:
-    ____|  |_____  
-    |           | 
-    |     XX    |_
-    | C          _
-    |___________| 
-
-    Room C:
-______________
-| C   C   C  |
-|     X*     |
-|____  ______| 
-    |  |      
- 
-    Room D:
-
-     _____________
-     |        C|_|
-    _|    X    |_|
-    _     X    |_|
-     |___________|
-    Key:
-    X - Enemy
-    X* - Boss
-    C - Chest
-    C* - Fake Chest
-    */
-
-    
 
     static String addTwoRooms(String firstRoom, String secondRoom) {
         
@@ -523,7 +520,10 @@ ______________
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
-        System.out.println(openChest("common", 2)[0]);
+        ArrayList<Item> yes = openChest("common", 1);
+        for (Item item: yes) {
+            System.out.println(item.name);
+        }
 
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
