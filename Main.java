@@ -1,7 +1,7 @@
 import java.util.Random;
 import java.util.HashMap;
 import java.util.Scanner;
-//import java.util.ArrayList;
+import java.util.ArrayList;
 
 enum Rarity {
     COMMON, UNCOMMON, RARE, SUPER_RARE, LEGENDARY, MYTHICAL;
@@ -30,6 +30,59 @@ enum Type {
     CONSUMABLE, USABLE, EQUIPPABLE, THROWABLE
 }
 
+class Item {
+    String name, description;
+    int levelNeeded;
+    Type type;
+    Rarity rarity;
+    public void setDetails() {
+        return;
+    }
+}
+
+class WitchsBestFriend extends Item {
+    public void setDetails() {
+        name = "Witch's Best Friend";
+        description = "It is a staff with a obvious phallic shape at the end, it can shoot magic missiles.";
+        levelNeeded = 69;
+        type = Type.USABLE;
+        rarity = Rarity.MYTHICAL;
+    }
+    WitchsBestFriend() {
+        setDetails();
+    }
+}
+
+class Stick extends Item {
+    public void setDetails() {
+        name = "Stick";
+        description = "A basic stick.";
+        levelNeeded = 0;
+        type = Type.USABLE;
+        rarity = Rarity.COMMON;
+    }
+    public int attackDamage = 1;
+
+    Stick() {
+        setDetails();
+    }
+}
+
+/*class something extends Item {
+    public void setDetails() {
+        name = "";
+        description = "";
+        levelNeeded = ;
+        type = Type.;
+        rarity = Rarity.;
+    }
+    something() {
+        setDetails();
+    }
+}*/
+
+
+
 abstract class Enemy {
     Random rand = new Random();
     double health;
@@ -39,27 +92,17 @@ abstract class Enemy {
     abstract void initializeValues(); 
 }
 
-class Item {
-    String name, description;
-    int levelNeeded;
-    Type type;
-    Rarity rarity;
-}
-
-class WitchsBestFriend extends Item {{
-    name = "Witch's Best Friend";
-    description = "It is a staff with a obvious phallic shape at the end, it can shoot magic missiles";
-    levelNeeded = 69;
-    type = Type.USABLE;
-    rarity = Rarity.MYTHICAL;
-}}
-
 class Player {
     Random rand = new Random();
     public double health;
-    public int level;
+    public int level, experience;
     public String nameOfPlayer, gender;
     public String[] pronouns = new String[2];
+    public int defense, attack;
+    public Item[] armor = new Item[4];
+    public Item[] weapons = new Item[3];
+    public ArrayList<Item> inventory = new ArrayList<Item>(); 
+    public Item equipedWeapon;
 }
 
 class Slime extends Enemy {
@@ -210,15 +253,27 @@ class Main {
 
     static Player createNewPlayer(boolean newCharacter) {
         if (newCharacter) {
+            System.out.println("Creating new character... Please wait...");
             Player player = new Player();
-            System.out.println("What is the name of your new character?");
-            player.nameOfPlayer = input.nextLine();
-            System.out.println("What is the gender of your new character? (Male, Female, other)");
-            player.gender = input.nextLine();
-            System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
-            player.pronouns = input.nextLine().split(" ");
-            player.level = 1;
-            player.health = 1;
+            try {
+                System.out.println("What is the name of your new character?");
+                player.nameOfPlayer = input.nextLine();
+                System.out.println("What is the gender of your new character? (Male, Female, other)");
+                player.gender = input.nextLine();
+                System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
+                player.pronouns = input.nextLine().split(" ");
+                player.level = 1;
+                player.health = 10;
+                player.experience = 0;
+                player.defense = 0;
+                player.attack = 0;
+                Stick starterStick = new Stick();
+                player.weapons[0] = starterStick;
+                System.out.println("Character successfully created!");
+            } catch(Exception error) {
+                System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error + ")");
+                System.exit(0);
+            }
             return(player);
         }
         else {
@@ -229,9 +284,54 @@ class Main {
 
     static Item[] openChest(String type, int amount) {
         Item[] returnedItems = new Item[5];
+        int howManyItems = rand.nextInt(5) + 1;
+        System.out.println(howManyItems);
+        double[] chances = new double[6];
+        Stick stick = new Stick();
+        WitchsBestFriend WitchsBestFriend = new WitchsBestFriend();
+        Item[] commonItems = {stick};
+        Item[] uncommonItems = {};
+        Item[] rareItems = {};
+        Item[] superRareItems = {};
+        Item[] legendaryItems = {};
+        Item[] mythicalItems = {WitchsBestFriend};
+        Item[] itemSet;
+        switch(type) {
+            case "common":
+                chances[0] = 62.5;
+                chances[1] = 27.5;
+                chances[2] = 7.5;
+                chances[3] = 2.5;
+                chances[4] = 0;
+                chances[5] = 0;
+        }    
 
-
-
+        for (int i = 0; i <= howManyItems - 1; i++) {
+            int randomRarityInt = rand.nextInt(1000) + 1;
+            double randomRarityDouble = randomRarityInt / 10.0;
+            int randomItemInt;
+            try{    
+                if (randomRarityDouble <= chances[0]) {
+                    itemSet = commonItems;
+                } else if (randomRarityDouble > chances[0] && randomRarityDouble <= (chances[1] + chances[0])) {
+                    itemSet = uncommonItems;
+                } else if (randomRarityDouble > (chances[1] + chances[0]) && randomRarityDouble <= (chances[2] + chances[1] + chances[0])) {
+                    itemSet = rareItems;
+                } else if (randomRarityDouble > (chances[2] + chances[1] + chances[0]) && randomRarityDouble <= (chances[3] + chances[2] + chances[1] + chances[0])) {
+                    itemSet = superRareItems;
+                } else if (randomRarityDouble > (chances[3] + chances[2] + chances[1] + chances[0]) && randomRarityDouble <= (chances[4] + chances[3] + chances[2] + chances[1] + chances[0])) {
+                    itemSet = legendaryItems;
+                } else {
+                    itemSet = mythicalItems;
+                }
+                System.out.print(itemSet.length);
+                randomItemInt = rand.nextInt(itemSet.length);
+            } catch(Exception e) {
+                itemSet = commonItems;
+                randomItemInt = rand.nextInt(itemSet.length);
+            }
+            returnedItems[i] = itemSet[randomItemInt];
+        }
         return(returnedItems);
     }
 
@@ -423,7 +523,7 @@ ______________
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
         //System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
-        //System.out.println(openChest("normal", 2)[1].rarity.getRarity());
+        System.out.println(openChest("common", 2)[0]);
 
         for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
@@ -433,6 +533,9 @@ ______________
                 Thread.currentThread().interrupt();
             }
             i += numberOfSeconds;
+            if (i > 20) {
+                i = 20;
+            }
             System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i * 5 + "%");
         }
         String action = mainMenu();
