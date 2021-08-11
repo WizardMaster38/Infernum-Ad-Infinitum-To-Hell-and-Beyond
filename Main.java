@@ -494,12 +494,12 @@ class Main {
                         continue;
                     }
                 } else if (j == Width - 1) {
-                    if (RoomGenerator[i][j] == 1) {
+                    if (RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 0) {
                         j--;
                         continue;
                     }
                 } else if (i == Height - 1) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5 || RoomGenerator[i][j] == 4) {
                         j--;
                         continue;
                     }
@@ -512,7 +512,7 @@ class Main {
                     }
                     else if (j == 0 && !(i == 0)) {
                         i--;
-                        j = Width;
+                        j = Width - 1;
                         continue;
                     }
                     else if (j == 0 && i == 0) {
