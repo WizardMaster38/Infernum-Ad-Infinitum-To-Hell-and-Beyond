@@ -61,11 +61,25 @@ class Stick extends Item {
         type = Type.USABLE;
         rarity = Rarity.COMMON;
     }
-    public int attackDamage = 1;
+    public int attackMin = 1, attackMax = 5;
 
     Stick() {
         setDetails();
     }
+}
+
+class Bokin extends Item {
+    public void setDetails() {
+        name = "Bokin";
+        description = "A wooden training sword.";
+        levelNeeded = 1;
+        type = Type.USABLE;
+        rarity = Rarity.COMMON;
+    }
+    Bokin() {
+        setDetails();
+    }
+    public int attackMin = 3, attackMax = 8;
 }
 
 class Slingshot extends Item {
@@ -94,6 +108,20 @@ class Pistol extends Item {
         setDetails();
     }
     public int attackMin = 53, attackMax = 89;
+}
+
+class TedBear extends Item {
+    public void setDetails() {
+        name = "Old Teddy Bear";
+        description = "An old, worn out teddy bear. It's warm to the touch.";
+        levelNeeded = 25;
+        type = Type.CONSUMABLE;
+        rarity = Rarity.LEGENDARY;
+    }
+    TedBear() {
+        setDetails();
+    }
+    public String effect = "+1Resurection";
 }
 
 /*class something extends Item {
@@ -256,7 +284,7 @@ class Main {
     static Scanner input = new Scanner(System.in);
     
     static String mainMenu() {
-        String mainMenu = "----- MAIN MENU -----\nWhat would you like to do?\n------------\nStart Game\nLoad Game (Coming soon! (Hopefully))\nSettings\nExit"; 
+        String mainMenu = "-------- MAIN MENU --------\nWhat would you like to do?\n---------------------------\nStart Game\nLoad Game (Coming soon! (Hopefully))\nSettings\nExit"; 
         System.out.println(mainMenu);
         String nextInput = input.nextLine();
         nextInput = nextInput.toLowerCase();
@@ -313,17 +341,18 @@ class Main {
     static ArrayList<Item> openChest(String type, int amount) {
         ArrayList<Item> returnedItems = new ArrayList<Item>();
         int howManyItems = rand.nextInt(5) + 1;
-        System.out.println(howManyItems);
+        //System.out.println(howManyItems);
         double[] chances = new double[6];
         Stick stick = new Stick();
         WitchsBestFriend WitchsBestFriend = new WitchsBestFriend();
         Slingshot Slingshot = new Slingshot();
         Pistol pistol = new Pistol();
+        TedBear bear = new TedBear();
         Item[] commonItems = {stick};
         Item[] uncommonItems = {Slingshot};
         Item[] rareItems = {};
         Item[] superRareItems = {pistol};
-        Item[] legendaryItems = {};
+        Item[] legendaryItems = {bear};
         Item[] mythicalItems = {WitchsBestFriend};
         Item[] itemSet;
         switch(type) {
@@ -361,7 +390,7 @@ class Main {
                 } else {
                     itemSet = mythicalItems;
                 }
-                System.out.print(itemSet.length);
+                //System.out.print(itemSet.length);
                 randomItemInt = rand.nextInt(itemSet.length);
             } catch(Exception e) {
                 itemSet = commonItems;
@@ -442,55 +471,92 @@ class Main {
                         RoomGenerator[i][j] = 3;
                     }
                 }
+
+                if (i == 0 && j == 0) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 4) {
+                        j--;
+                        continue;
+                    }
+                } else if (j == 0) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 4) {
+                        j--;
+                        continue;
+                    } 
+                } else if (i == 0) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1) {
+                        j--;
+                        continue;
+                    }
+                } 
+                else if (i == Height - 1 && j == Width - 1) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 5) {
+                        j--;
+                        continue;
+                    }
+                } else if (j == Width - 1) {
+                    if (RoomGenerator[i][j] == 1) {
+                        j--;
+                        continue;
+                    }
+                } else if (i == Height - 1) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5) {
+                        j--;
+                        continue;
+                    }
+                } 
+                
                 if (allowedRooms[RoomGenerator[i][j]] == null) {
                     if (j > 0) {
                         j--;
+                        continue;
                     }
                     else if (j == 0 && !(i == 0)) {
                         i--;
                         j = Width;
+                        continue;
                     }
                     else if (j == 0 && i == 0) {
                         j--;
+                        continue;
                     }
-                } else{
-                    try {
-                        System.out.println("Room " + RoomGenerator[i][j] + "Position: " + i + ", " + j + ".\n" + allowedRooms[RoomGenerator[i][j]]);
-                    } catch(Exception error) { // debugging
-                        System.out.println(error);
-                    }
-                    if (j == 1 && i == 0) {
-                        fullMapOne = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapOne);
-                    } else if (j > 1 && i == 0) {
-                        fullMapOne = addTwoRooms(fullMapOne, allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapOne);
-                    } else if (j == 1 && i == 1) {
-                        fullMapTwo = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapTwo);
-                    } else if (j > 1 && i == 1) {
-                        fullMapTwo = addTwoRooms(fullMapTwo, allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapTwo);
-                    } else if (j == 1 && i == 2) {
-                        fullMapThree = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapThree);
-                    } else if (j > 1 && i == 2) {
-                        fullMapThree = addTwoRooms(fullMapThree, allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapThree);
-                    } else if (j == 1 && i == 3) {
-                        fullMapFour = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapFour);
-                    } else if (j > 1 && i == 3) {
-                        fullMapFour = addTwoRooms(fullMapFour, allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapFour);
-                    } else if (j == 1 && i == 4) {
-                        fullMapFive = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapFive);
-                    } else if (j > 1 && i == 4) {
-                        fullMapFive = addTwoRooms(fullMapFive, allowedRooms[RoomGenerator[i][j]]);
-                        System.out.println(fullMapFive);
-                    }
+                } 
+                try {
+                    //System.out.println("Room " + RoomGenerator[i][j] + "Position: " + i + ", " + j + ".\n" + allowedRooms[RoomGenerator[i][j]]);
+                } catch(Exception error) { // debugging
+                    System.out.println(error);
                 }
+                if (j == 1 && i == 0) {
+                    fullMapOne = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapOne);
+                } else if (j > 1 && i == 0) {
+                    fullMapOne = addTwoRooms(fullMapOne, allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapOne);
+                } else if (j == 1 && i == 1) {
+                    fullMapTwo = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapTwo);
+                } else if (j > 1 && i == 1) {
+                    fullMapTwo = addTwoRooms(fullMapTwo, allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapTwo);
+                } else if (j == 1 && i == 2) {
+                    fullMapThree = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapThree);
+                } else if (j > 1 && i == 2) {
+                    fullMapThree = addTwoRooms(fullMapThree, allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapThree);
+                } else if (j == 1 && i == 3) {
+                    fullMapFour = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapFour);
+                } else if (j > 1 && i == 3) {
+                    fullMapFour = addTwoRooms(fullMapFour, allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapFour);
+                } else if (j == 1 && i == 4) {
+                    fullMapFive = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapFive);
+                } else if (j > 1 && i == 4) {
+                    fullMapFive = addTwoRooms(fullMapFive, allowedRooms[RoomGenerator[i][j]]);
+                    //System.out.println(fullMapFive);
+                }
+                
             }
         }
         fullMap = fullMapOne + fullMapTwo + fullMapThree + fullMapFour + fullMapFive;
@@ -508,24 +574,12 @@ class Main {
     }
 
     public static void main(String[] args) {
-        /*String a = System.getenv("A");
-        String b = System.getenv("B");
-        String c = System.getenv("C");
-        String d = System.getenv("D");
-        String e = System.getenv("E(mpty)");
-        String c2 = System.getenv("C2");*/
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
-        
-        //System.out.println("Full map:\n" + generateMap(5, 5, 3, "easy"));
-        //System.out.println("Full map:\n" + generateMap(5, 5, 3, "medium"));
-        //System.out.println("Full map:\n" + generateMap(5, 5, 3, "hard"));
-        ArrayList<Item> yes = openChest("common", 1);
-        for (Item item: yes) {
-            System.out.println(item.name);
-        }
-
-        for (int i = 1; i < 20; i = i) {
+        System.out.println(generateMap(5, 5, 1, "easy"));
+        System.out.println(generateMap(5, 5, 1, "medium"));
+        System.out.println(generateMap(5, 5, 1, "hard"));
+        /*for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
             try {
                 Thread.sleep(numberOfSeconds * 1000);
@@ -537,9 +591,8 @@ class Main {
                 i = 20;
             }
             System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i * 5 + "%");
-        }
+        }*/
         String action = mainMenu();
-        //System.out.println(action);
         switch (action) {
             case "start game":
                 startNewGame(true);
