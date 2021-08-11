@@ -551,7 +551,7 @@ class Main {
                     }
                     else if (j == 0 && !(i == 0)) {
                         i--;
-                        j = Width;
+                        j = Width - 1;
                         continue;
                     }
                     else if (j == 0 && i == 0) {
