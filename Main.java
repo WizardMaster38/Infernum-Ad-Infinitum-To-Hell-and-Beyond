@@ -408,7 +408,7 @@ class Main {
         String[] roomFirst = firstRoom.split("\n");
         String[] roomSecond = secondRoom.split("\n"); 
 
-        for (int i = 0; i < 5; i++) {
+        for (int i = 0; i < 4; i++) {
             String string = roomFirst[i].concat(roomSecond[i]);
             string = string.concat("\n");
             newRoom = newRoom.concat(string);
@@ -417,198 +417,222 @@ class Main {
         return(newRoom);
     }
 
-    static boolean validateMap(int[][] mapTable) {
-        boolean validMap = true; 
-        for (int i = 0; i < mapTable.length; i++) {
-            if (validMap == false) {
+    static boolean validateRow(int[] rowOne, int[] rowTwo) {
+        boolean validRow = true;
+        // self-row validation first
+        for (int one = 0; one < rowTwo.length - 1; one++) {
+            if (validRow == false) {
                 break;
             }
-            for (int j = 0; j < mapTable[i].length; j++) {
-                if (validMap == false || j == 5) {
-                    break;
+            int firstRoom = rowTwo[one];
+            int secondRoom = rowTwo[one + 1];
+            if (firstRoom == 0 || firstRoom == 1 || firstRoom == 2 || firstRoom == 4 || firstRoom == 5 || firstRoom == 7 || firstRoom == 8 || firstRoom == 11 || firstRoom == 15) {
+                if (secondRoom == 1 || secondRoom == 2 || secondRoom == 3 || secondRoom == 5 || secondRoom == 7 || secondRoom == 9 || secondRoom == 10 || secondRoom == 14) {
+                    validRow = true;
+                } else {
+                    validRow = false;
                 }
-                try {
-                    if (mapTable[i][j] == 0) {
-                        if ((mapTable[i - 1][j] == 2 || mapTable[i - 1][j] == 5 || mapTable[i - 1][j] == 4 || mapTable[i - 1][j] == 0) && (mapTable[i][j + 1] == 4 || mapTable[i][j + 1] == 0) && (mapTable[i + 1][j] == 0 || mapTable[i + 1][j] == 1)) {
-                            validMap = true;
-                        } else {
-                            validMap = false;
-                        }
-                    } else if (mapTable[i][j] == 2 || mapTable[i][j] == 5) {
-                        if ((mapTable[i + 1][j] == 0 || mapTable[i + 1][j] == 1)) {
-                            validMap = true;
-                        } else {
-                            validMap = false;
-                        }
-                    } else if (mapTable[i][j] == 1) {
-                        if ((mapTable[i - 1][j] == 0 || mapTable[i - 1][j] == 2 || mapTable[i - 1][j] == 5) && (mapTable[i][j + 1] == 0 || mapTable[i][j + 1] == 4)) {
-                            validMap = true;
-                        } else {
-                            validMap = false;
-                        }
-                    }
-                } catch (Exception error2) {
-                    System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error2 + ") 2");
-                    validMap = false;
+            } else {
+                if (secondRoom == 1 || secondRoom == 2 || secondRoom == 3 || secondRoom == 5 || secondRoom == 7 || secondRoom == 9 || secondRoom == 10 || secondRoom == 14) {
+                    validRow = false;
                 }
             }
         }
-        return(validMap);
+        if (rowOne.equals(rowTwo)) {
+            return(validRow);
+        }
+        for (int one = 0; one < rowOne.length; one++) {
+            if (validRow == false) {
+                break;
+            }
+            int roomAbove = rowOne[one], roomBelow = rowTwo[one];
+            if (roomAbove == 1 || roomAbove == 3 || roomAbove == 4 || roomAbove == 5 || roomAbove == 6 || roomAbove == 8 || roomAbove == 9 || roomAbove == 13) {
+                if (roomBelow == 2 || roomBelow == 3 || roomBelow == 4 || roomBelow == 5 || roomBelow == 6 || roomBelow == 10 || roomBelow == 11 || roomBelow == 16) {
+                    validRow = true;
+                } else {
+                    validRow = false;
+                }
+            } else {
+                if (roomBelow == 2 || roomBelow == 3 || roomBelow == 4 || roomBelow == 5 || roomBelow == 6 || roomBelow == 10 || roomBelow == 11 || roomBelow == 16) {
+                    validRow = false;
+                }
+            }
+        }
+        return(validRow);
     }
-    static int timesLooped = 0;
-    static String generateMap(int Width, int Height, int Floors, String Mode) { 
-        String a = System.getenv("A");
-        String b = System.getenv("B"); 
-        String c = System.getenv("C");
-        String d = System.getenv("D");
-        String e = System.getenv("E(mpty)");
-        String c2 = System.getenv("C2");
-        String fullMapOne = "";
-        String fullMapTwo = "";
-        String fullMapThree = "";
-        String fullMapFour = "";
-        String fullMapFive = "";
-        String fullMap = "";
-        String[] allowedRooms = new String[6];
-        int[][] RoomGenerator = new int[Height][Width];
-        switch(Mode) {
-            case "easy":
-                allowedRooms[0] = a;
-                allowedRooms[1] = b;
-                allowedRooms[2] = c;
-                allowedRooms[3] = e;
-                break;
-            case "medium":
-                allowedRooms[0] = a;
-                allowedRooms[1] = b;
-                allowedRooms[2] = c;
-                allowedRooms[3] = e;
-                allowedRooms[4] = d;
-                break;
-            case "hard":
-                allowedRooms[0] = a;
-                allowedRooms[1] = b;
-                allowedRooms[2] = c;
-                allowedRooms[3] = e;
-                allowedRooms[4] = d;
-                allowedRooms[5] = c2;
-                break;
-        }
-        int bossRooms = 0;
-        for (int i = 0; i < Height; i++) { // X dimension
-            for (int j = 0; j < Width; j++) { // Y dimension
-                try {
-                    RoomGenerator[i][j] = rand.nextInt(6); // generates the numbers
-                } catch (Exception error2) {
-                    System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error2 + ") 1");
-                    System.exit(1);
-                }
-                if (RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5) {
-                    if (bossRooms < 1 && i != 0 && j != 0) {
-                        bossRooms++;
-                    } else if (bossRooms >= 1 || (i == 0 && j == 0)) {
-                        RoomGenerator[i][j] = 3;
-                    }
-                }
 
-                if (i == 0 && j == 0) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 4) {
-                        j--;
-                        continue;
-                    }
-                } else if (j == 0) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 4) {
-                        j--;
-                        continue;
-                    } 
-                } else if (i == 0) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 ||  RoomGenerator[i][j] == 4) {
-                        j--;
-                        continue;
-                    }
-                } 
-                else if (i == Height - 1 && j == Width - 1) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 5) {
-                        j--;
-                        continue;
-                    }
-                } else if (j == Width - 1) {
-                    if (RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 0) {
-                        j--;
-                        continue;
-                    }
-                } else if (i == Height - 1) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5 || RoomGenerator[i][j] == 4) {
-                        j--;
-                        continue;
-                    }
-                } 
-                
-                if (allowedRooms[RoomGenerator[i][j]] == null) {
-                    if (j > 0) {
-                        j--;
-                        continue;
-                    }
-                    else if (j == 0 && !(i == 0)) {
-                        i--;
-                        j = Width - 1;
-                        continue;
-                    }
-                    else if (j == 0 && i == 0) {
-                        j--;
-                        continue;
-                    }
-                } 
-                try {
-                    //System.out.println("Room " + RoomGenerator[i][j] + "Position: " + i + ", " + j + ".\n" + allowedRooms[RoomGenerator[i][j]]);
-                } catch(Exception error) { // debugging
-                    System.out.println(error);
+    static String generateMap(int Width, int Height, int Floors, String Type) {
+        String spawn = "_________ \n|       |_\n|        _\n|_______| ";
+        String tInter1 = " ________ \n_|C    C|_\n___ XX ___\n   |  |   ", tInter2 = " __|  |__ \n_|     C|_\n_   XX   _\n |______| ", tInter3 = " __|  |___\n_|  XX  C|\n___    __|\n   |  |   ", tInter4 = "___|  |__ \n|C  XX  |_\n|__    ___\n   |  |   ";
+        String plusInter = " __|  |__ \n_|C    C|_\n___ XX ___\n   |  |   ";
+        String iInter1 = "___|  |___\n|   XX  C|\n|__    __|\n   |  |   ", iInter2 = " ________ \n_|     C|_\n_   XX   _\n |______| ";
+        String lInter1 = "___|  |__ \n|       |_\n|C  XX   _\n|_______| ", lInter2 = " __|  |___\n_|       |\n_   XX  C|\n |_______|", lInter3 = " _________\n_|  XX  C|\n___    __|\n   |  |   ", lInter4 = "_________ \n|C  XX  |_\n|__    ___\n   |  |   ";
+        String boss1 = "__________\n|   CC   |\n|__ X* __|\n   |  |   ", boss2 = " _________\n_|      C|\n_   X*  C|\n |_______|", boss3 = "_________ \n|C      |_\n|C  X*   _\n|_______| ", boss4 = "___|  |___\n|C      C|\n|   X*   |\n|________|";
+        String empty = "          \n          \n          \n          ";
+        int[][] roomGenerator = new int[Height][Width];
+        int bossRooms = 0;
+        String[] rooms = {spawn, tInter1, tInter2, tInter3, tInter4, plusInter, iInter1, iInter2, lInter4, lInter3, lInter2, lInter1, empty, boss1, boss2, boss3, boss4};
+        String fullMap = "";
+
+        for (int h = 0; h < Height; h++) {
+            for (int w = 0; w < Width; w++) {
+                int newInt = rand.nextInt(16) + 1;
+                //System.out.println(h);
+                //System.out.println(bossRooms);
+                if (h == 0 && w == 0) {
+                    newInt = 0;
                 }
-                if (j == 1 && i == 0) {
-                    fullMapOne = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapOne);
-                } else if (j > 1 && i == 0) {
-                    fullMapOne = addTwoRooms(fullMapOne, allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapOne);
-                } else if (j == 1 && i == 1) {
-                    fullMapTwo = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapTwo);
-                } else if (j > 1 && i == 1) {
-                    fullMapTwo = addTwoRooms(fullMapTwo, allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapTwo);
-                } else if (j == 1 && i == 2) {
-                    fullMapThree = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapThree);
-                } else if (j > 1 && i == 2) {
-                    fullMapThree = addTwoRooms(fullMapThree, allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapThree);
-                } else if (j == 1 && i == 3) {
-                    fullMapFour = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapFour);
-                } else if (j > 1 && i == 3) {
-                    fullMapFour = addTwoRooms(fullMapFour, allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapFour);
-                } else if (j == 1 && i == 4) {
-                    fullMapFive = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapFive);
-                } else if (j > 1 && i == 4) {
-                    fullMapFive = addTwoRooms(fullMapFive, allowedRooms[RoomGenerator[i][j]]);
-                    //System.out.println(fullMapFive);
+                if (h == Height - 1 && w == Width - 1) {
+                    if (bossRooms == 0) {
+                        newInt = 14;
+                    }
                 }
-                
+                if (h == 0) {
+                    if (newInt == 2 || newInt == 3 || newInt == 4 || newInt == 5 || newInt == 6 || newInt == 10 || newInt == 11 || newInt == 16) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 16) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (w == 0) {
+                    if (newInt == 1 || newInt == 2 || newInt == 3 || newInt == 5 || newInt == 7 || newInt == 9 || newInt == 10 || newInt == 14) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 14) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (h == Height - 1) {
+                    if (newInt == 1 || newInt == 3 || newInt == 4 || newInt == 5 || newInt == 6 || newInt == 8 || newInt == 9 || newInt == 13) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 13) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (w == Width - 1) {
+                    if (newInt == 1 || newInt == 2 || newInt == 4 || newInt == 5 || newInt == 7 || newInt == 8 || newInt == 11 || newInt == 15) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 15) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (newInt >= 13) {
+                    if (bossRooms == 0) {
+                        bossRooms++;
+                    } else {
+                        newInt = rand.nextInt(12) + 1;
+                    }
+                }
+                if (h == 0) {
+                    if (newInt == 2 || newInt == 3 || newInt == 4 || newInt == 5 || newInt == 6 || newInt == 10 || newInt == 11 || newInt == 16) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 16) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (h == 0 && w == 1 && newInt == 14) {
+                    w--;
+                    bossRooms--;
+                    continue;
+                }
+                if (w == 0) {
+                    if (newInt == 1 || newInt == 2 || newInt == 3 || newInt == 5 || newInt == 7 || newInt == 9 || newInt == 10 || newInt == 14) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 14) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (h == Height - 1) {
+                    if (newInt == 1 || newInt == 3 || newInt == 4 || newInt == 5 || newInt == 6 || newInt == 8 || newInt == 9 || newInt == 13) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 13) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                if (w == Width - 1) {
+                    if (newInt == 1 || newInt == 2 || newInt == 4 || newInt == 5 || newInt == 7 || newInt == 8 || newInt == 11 || newInt == 15) {
+                        w--;
+                        if (bossRooms >= 1 && newInt == 15) {
+                            bossRooms = 0;
+                        }
+                        continue;
+                    }
+                }
+                roomGenerator[h][w] = newInt;
+                //System.out.print(rooms[newInt] + "\n");
+            }
+            if (h == 0) {
+                boolean validRow = validateRow(roomGenerator[h], roomGenerator[h]);
+                //System.out.println(validRow);
+                if (!(validRow)) {
+                    h--;
+                    continue;
+                }
+            } else {
+                boolean validRow = validateRow(roomGenerator[h - 1], roomGenerator[h]);
+                //System.out.println(validRow);
+                if (!(validRow)) {
+                    h--;
+                    continue;
+                }
             }
         }
-        boolean validMap = validateMap(RoomGenerator);
-        if (!(validMap)) {
-            timesLooped++;
-            System.out.println("Map invalid. Generating new one. " + timesLooped + " times.");
-            
-            fullMap = generateMap(Width, Height, Floors, Mode);
-            return(fullMap);
-        } 
-        fullMap = fullMapOne + fullMapTwo + fullMapThree + fullMapFour + fullMapFive;
+        String fullRowOne = "", fullRowTwo = "", fullRowThree = "", fullRowFour = "", fullRowFive = "";
+        String[] fullRows = {fullRowOne, fullRowTwo, fullRowThree, fullRowFour, fullRowFive};
+        for (int i = 0; i < roomGenerator.length; i++) {
+            for (int j = 0; j < roomGenerator[0].length; j++) {
+                if (j == 0) {
+                    continue;
+                }
+                if (i == 0) {
+                    if (j == 1) {
+                        fullRowOne = addTwoRooms(rooms[roomGenerator[i][j - 1]], rooms[roomGenerator[i][j]]);
+                    } else {
+                        fullRowOne = addTwoRooms(fullRowOne, rooms[roomGenerator[i][j]]);
+                    }
+                } else if (i == 1) {
+                    if (j == 1) {
+                        fullRowTwo = addTwoRooms(rooms[roomGenerator[i][j - 1]], rooms[roomGenerator[i][j]]);
+                    } else {
+                        fullRowTwo = addTwoRooms(fullRowTwo, rooms[roomGenerator[i][j]]);
+                    }
+                } else if (i == 2) {
+                    if (j == 1) {
+                        fullRowThree = addTwoRooms(rooms[roomGenerator[i][j - 1]], rooms[roomGenerator[i][j]]);
+                    } else {
+                        fullRowThree = addTwoRooms(fullRowThree, rooms[roomGenerator[i][j]]);
+                    }
+                } else if (i == 3) {
+                    if (j == 1) {
+                        fullRowFour = addTwoRooms(rooms[roomGenerator[i][j - 1]], rooms[roomGenerator[i][j]]);
+                    } else {
+                        fullRowFour = addTwoRooms(fullRowFour, rooms[roomGenerator[i][j]]);
+                    }
+                } else if (i == 4) {
+                    if (j == 1) {
+                        fullRowFive = addTwoRooms(rooms[roomGenerator[i][j - 1]], rooms[roomGenerator[i][j]]);
+                    } else {
+                        fullRowFive = addTwoRooms(fullRowFive, rooms[roomGenerator[i][j]]);
+                    }
+                } 
+            }
+        }
+        fullMap = fullRowOne + fullRowTwo + fullRowThree + fullRowFour + fullRowFive;
         return(fullMap);
-    }
+    }    
 
     static void startNewGame(boolean newGame) {
         Player player;
@@ -624,6 +648,11 @@ class Main {
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
         System.out.println(generateMap(5, 5, 1, "easy"));
+        System.out.println(generateMap(5, 5, 1, "easy"));
+        System.out.println(generateMap(5, 5, 1, "easy"));
+        System.out.println(generateMap(5, 5, 1, "easy"));
+        System.out.println(generateMap(5, 5, 1, "easy"));
+        
         //System.out.println(generateMap(5, 5, 1, "medium"));
         //System.out.println(generateMap(5, 5, 1, "hard"));
         /*for (int i = 1; i < 20; i = i) {
