@@ -472,14 +472,18 @@ class Main {
                     }
                 }
 
-                
-                if (j == 0) {
+                if (i == 0 && j == 0) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 4) {
+                        j--;
+                        continue;
+                    }
+                } else if (j == 0) {
                     if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 4) {
                         j--;
                         continue;
                     } 
                 } else if (i == 0) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 5) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1) {
                         j--;
                         continue;
                     }
@@ -495,12 +499,12 @@ class Main {
                         continue;
                     }
                 } else if (i == Height - 1) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 4) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5 || RoomGenerator[i][j] == 4) {
                         j--;
                         continue;
                     }
-                }
-
+                } 
+                
                 if (allowedRooms[RoomGenerator[i][j]] == null) {
                     if (j > 0) {
                         j--;
@@ -522,7 +526,7 @@ class Main {
                     System.out.println(error);
                 }
                 if (j == 1 && i == 0) {
-                    fullMapOne = addTwoRooms(System.getenv("Spawn"), allowedRooms[RoomGenerator[i][j]]);
+                    fullMapOne = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
                     //System.out.println(fullMapOne);
                 } else if (j > 1 && i == 0) {
                     fullMapOne = addTwoRooms(fullMapOne, allowedRooms[RoomGenerator[i][j]]);
