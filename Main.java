@@ -417,6 +417,45 @@ class Main {
         return(newRoom);
     }
 
+    static boolean validateMap(int[][] mapTable) {
+        boolean validMap = true; 
+        for (int i = 0; i < mapTable.length; i++) {
+            if (validMap == false) {
+                break;
+            }
+            for (int j = 0; j < mapTable[i].length; j++) {
+                if (validMap == false || j == 5) {
+                    break;
+                }
+                try {
+                    if (mapTable[i][j] == 0) {
+                        if ((mapTable[i - 1][j] == 2 || mapTable[i - 1][j] == 5 || mapTable[i - 1][j] == 4 || mapTable[i - 1][j] == 0) && (mapTable[i][j + 1] == 4 || mapTable[i][j + 1] == 0) && (mapTable[i + 1][j] == 0 || mapTable[i + 1][j] == 1)) {
+                            validMap = true;
+                        } else {
+                            validMap = false;
+                        }
+                    } else if (mapTable[i][j] == 2 || mapTable[i][j] == 5) {
+                        if ((mapTable[i + 1][j] == 0 || mapTable[i + 1][j] == 1)) {
+                            validMap = true;
+                        } else {
+                            validMap = false;
+                        }
+                    } else if (mapTable[i][j] == 1) {
+                        if ((mapTable[i - 1][j] == 0 || mapTable[i - 1][j] == 2 || mapTable[i - 1][j] == 5) && (mapTable[i][j + 1] == 0 || mapTable[i][j + 1] == 4)) {
+                            validMap = true;
+                        } else {
+                            validMap = false;
+                        }
+                    }
+                } catch (Exception error2) {
+                    System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error2 + ") 2");
+                    validMap = false;
+                }
+            }
+        }
+        return(validMap);
+    }
+    static int timesLooped = 0;
     static String generateMap(int Width, int Height, int Floors, String Mode) { 
         String a = System.getenv("A");
         String b = System.getenv("B"); 
@@ -461,25 +500,29 @@ class Main {
                 try {
                     RoomGenerator[i][j] = rand.nextInt(6); // generates the numbers
                 } catch (Exception error2) {
-                    System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error2 + ")");
+                    System.out.println("An error occured! Please report this at https://github.com/WizardMaster38/Infernum-Ad-Infinitum-To-Hell-and-Beyond/issues/new (Error: " + error2 + ") 1");
                     System.exit(1);
                 }
                 if (RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5) {
-                    if (bossRooms < 1) {
+                    if (bossRooms < 1 && i != 0 && j != 0) {
                         bossRooms++;
-                    } else if (bossRooms >= 1) {
+                    } else if (bossRooms >= 1 || (i == 0 && j == 0)) {
                         RoomGenerator[i][j] = 3;
                     }
                 }
 
-                
-                if (j == 0) {
+                if (i == 0 && j == 0) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 4) {
+                        j--;
+                        continue;
+                    }
+                } else if (j == 0) {
                     if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 4) {
                         j--;
                         continue;
                     } 
                 } else if (i == 0) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 || RoomGenerator[i][j] == 5) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 1 ||  RoomGenerator[i][j] == 4) {
                         j--;
                         continue;
                     }
@@ -495,12 +538,12 @@ class Main {
                         continue;
                     }
                 } else if (i == Height - 1) {
-                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 4) {
+                    if (RoomGenerator[i][j] == 0 || RoomGenerator[i][j] == 2 || RoomGenerator[i][j] == 5 || RoomGenerator[i][j] == 4) {
                         j--;
                         continue;
                     }
-                }
-
+                } 
+                
                 if (allowedRooms[RoomGenerator[i][j]] == null) {
                     if (j > 0) {
                         j--;
@@ -522,7 +565,7 @@ class Main {
                     System.out.println(error);
                 }
                 if (j == 1 && i == 0) {
-                    fullMapOne = addTwoRooms(System.getenv("Spawn"), allowedRooms[RoomGenerator[i][j]]);
+                    fullMapOne = addTwoRooms(allowedRooms[RoomGenerator[i][0]], allowedRooms[RoomGenerator[i][j]]);
                     //System.out.println(fullMapOne);
                 } else if (j > 1 && i == 0) {
                     fullMapOne = addTwoRooms(fullMapOne, allowedRooms[RoomGenerator[i][j]]);
@@ -555,6 +598,14 @@ class Main {
                 
             }
         }
+        boolean validMap = validateMap(RoomGenerator);
+        if (!(validMap)) {
+            timesLooped++;
+            System.out.println("Map invalid. Generating new one. " + timesLooped + " times.");
+            
+            fullMap = generateMap(Width, Height, Floors, Mode);
+            return(fullMap);
+        } 
         fullMap = fullMapOne + fullMapTwo + fullMapThree + fullMapFour + fullMapFive;
         return(fullMap);
     }
@@ -573,8 +624,8 @@ class Main {
         System.out.println("Please wait, we are initializing everything!");
         String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
         System.out.println(generateMap(5, 5, 1, "easy"));
-        System.out.println(generateMap(5, 5, 1, "medium"));
-        System.out.println(generateMap(5, 5, 1, "hard"));
+        //System.out.println(generateMap(5, 5, 1, "medium"));
+        //System.out.println(generateMap(5, 5, 1, "hard"));
         /*for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
             try {
