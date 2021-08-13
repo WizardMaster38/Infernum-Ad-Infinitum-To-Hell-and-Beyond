@@ -461,7 +461,7 @@ class Main {
         return(validRow);
     }
 
-    static String generateMap(int Width, int Height, int Floors, String Type) {
+    static String generateMap(int Width, int Height, int Floors) {
         String spawn = "_________ \n|       |_\n|        _\n|_______| ";
         String tInter1 = " ________ \n_|C    C|_\n___ XX ___\n   |  |   ", tInter2 = " __|  |__ \n_|     C|_\n_   XX   _\n |______| ", tInter3 = " __|  |___\n_|  XX  C|\n___    __|\n   |  |   ", tInter4 = "___|  |__ \n|C  XX  |_\n|__    ___\n   |  |   ";
         String plusInter = " __|  |__ \n_|C    C|_\n___ XX ___\n   |  |   ";
@@ -477,8 +477,6 @@ class Main {
         for (int h = 0; h < Height; h++) {
             for (int w = 0; w < Width; w++) {
                 int newInt = rand.nextInt(16) + 1;
-                //System.out.println(h);
-                //System.out.println(bossRooms);
                 if (h == 0 && w == 0) {
                     newInt = 0;
                 }
@@ -572,7 +570,6 @@ class Main {
                     }
                 }
                 roomGenerator[h][w] = newInt;
-                //System.out.print(rooms[newInt] + "\n");
             }
             if (h == 0) {
                 boolean validRow = validateRow(roomGenerator[h], roomGenerator[h]);
@@ -591,7 +588,6 @@ class Main {
             }
         }
         String fullRowOne = "", fullRowTwo = "", fullRowThree = "", fullRowFour = "", fullRowFive = "";
-        String[] fullRows = {fullRowOne, fullRowTwo, fullRowThree, fullRowFour, fullRowFive};
         for (int i = 0; i < roomGenerator.length; i++) {
             for (int j = 0; j < roomGenerator[0].length; j++) {
                 if (j == 0) {
@@ -641,21 +637,45 @@ class Main {
         } else {
             player = new Player();
         }
-        
+        System.out.println("How many rooms high would you like your map to be? (Maximum 5)");
+        int height = input.nextInt();
+        if (height > 5) {
+            height = 5;
+        }
+        System.out.println("How many rooms wide would you like your map to be? (Maximum 5)");
+        int width = input.nextInt();
+        if (width > 5) {
+            width = 5;
+        }
+        System.out.println("How many floors would you like your map to be? (Maximum 1)");
+        int floors = input.nextInt();
+        if (floors > 1) {
+            floors = 1;
+        }
+        String chosenMap = "";
+        String[] maps = {generateMap(height, width, floors), generateMap(height, width, floors), generateMap(height, width, floors), generateMap(height, width, floors), generateMap(height, width, floors)};
+        for (String map: maps) {
+            if (chosenMap != "") {
+                break;
+            }
+            System.out.println("Would you like this map?");
+            System.out.println(map);
+            String doYouWantIt = input.nextLine();
+            if (doYouWantIt.toLowerCase() == "yes") {
+                chosenMap = map;
+            } else if (doYouWantIt.toLowerCase() == "no") {
+                continue;
+            } else {
+                System.out.println("Invalid input. Please try again.");
+                mainMenu();
+            }
+        }
     }
 
     public static void main(String[] args) {
         System.out.println("Please wait, we are initializing everything!");
-        String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
-        System.out.println(generateMap(5, 5, 1, "easy"));
-        System.out.println(generateMap(5, 5, 1, "easy"));
-        System.out.println(generateMap(5, 5, 1, "easy"));
-        System.out.println(generateMap(5, 5, 1, "easy"));
-        System.out.println(generateMap(5, 5, 1, "easy"));
-        
-        //System.out.println(generateMap(5, 5, 1, "medium"));
-        //System.out.println(generateMap(5, 5, 1, "hard"));
-        /*for (int i = 1; i < 20; i = i) {
+        /*String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
+        for (int i = 1; i < 20; i = i) {
             int numberOfSeconds = rand.nextInt(4) + 1;
             try {
                 Thread.sleep(numberOfSeconds * 1000);
@@ -668,6 +688,7 @@ class Main {
             }
             System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i * 5 + "%");
         }*/
+
         String action = mainMenu();
         switch (action) {
             case "start game":
