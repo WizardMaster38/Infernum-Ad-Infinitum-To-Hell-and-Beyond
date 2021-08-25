@@ -2,6 +2,8 @@ import java.util.Random;
 import java.util.HashMap;
 import java.util.Scanner;
 import java.util.ArrayList;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 enum Rarity {
     COMMON, UNCOMMON, RARE, SUPER_RARE, LEGENDARY, MYTHICAL;
@@ -28,6 +30,10 @@ enum Rarity {
 
 enum Type {
     CONSUMABLE, USABLE, EQUIPPABLE, THROWABLE
+}
+
+enum PlayerTypes {
+    MAGE, RANGER, HUNTER
 }
 
 class Item {
@@ -152,13 +158,14 @@ class Player {
     Random rand = new Random();
     public double health;
     public int level, experience;
-    public String nameOfPlayer, gender;
-    public String[] pronouns = new String[2];
+    public String nameOfPlayer;
+    public PlayerTypes PlayerClass;
     public int defense, attack;
     public Item[] armor = new Item[4];
     public Item[] weapons = new Item[3];
     public ArrayList<Item> inventory = new ArrayList<Item>(); 
-    public Item equipedWeapon;
+    public Item equippedWeapon;
+
 }
 
 class Slime extends Enemy {
@@ -314,10 +321,8 @@ class Main {
             try {
                 System.out.println("What is the name of your new character?");
                 player.nameOfPlayer = input.nextLine();
-                System.out.println("What is the gender of your new character? (Male, Female, other)");
-                player.gender = input.nextLine();
-                System.out.println("What are the pronouns of your character? Split them with a space, for example: 'She Her' or 'He Them'.");
-                player.pronouns = input.nextLine().split(" ");
+                System.out.println("What class is your character? Options: Mage, Hunter, Ranger.");
+                player.PlayerClass = PlayerTypes.valueOf(input.nextLine().toUpperCase());
                 player.level = 1;
                 player.health = 10;
                 player.experience = 0;
@@ -629,8 +634,19 @@ class Main {
         fullMap = fullRowOne + fullRowTwo + fullRowThree + fullRowFour + fullRowFive;
         return(fullMap);
     }    
+    
+    static int numberOfChests(String map) {
+        int i = 0;
+        Pattern p = Pattern.compile("C");
+        Matcher m = p.matcher(map);
+        while (m.find()) {
+        	i++;
+        }
+        return(i);
+    }
 
     static void startNewGame(boolean newGame) {
+        Scanner input2 = new Scanner(System.in);
         Player player;
         if (newGame) {
             player = createNewPlayer(newGame);
@@ -660,35 +676,31 @@ class Main {
             }
             System.out.println("Would you like this map?");
             System.out.println(map);
-            String doYouWantIt = input.nextLine();
-            if (doYouWantIt.toLowerCase() == "yes") {
+            String yes = "yes", no = "no";
+            String doYouWantIt = input2.nextLine();
+            if (doYouWantIt.toLowerCase().contentEquals(yes)) {
                 chosenMap = map;
-            } else if (doYouWantIt.toLowerCase() == "no") {
+            } else if (doYouWantIt.toLowerCase().contentEquals(no)) {
                 continue;
             } else {
                 System.out.println("Invalid input. Please try again.");
-                mainMenu();
+                System.exit(1);
             }
         }
+        
+        int chests = numberOfChests(chosenMap);
+        ArrayList<ArrayList<Item>> chestsLoot = new ArrayList<ArrayList<Item>>();
+        for(int i = 0; i < chests; i++) {
+            System.out.println("Generating chest loot.. " + (i + 1) + "/" + chests);
+            ArrayList<Item> loot = openChest("common", 1);
+            chestsLoot.add(loot);
+        }
+
+        input2.close();
     }
 
     public static void main(String[] args) {
         System.out.println("Please wait, we are initializing everything!");
-        /*String[] initializingValuesText = {"Initializing.. ", "Setting up map.. ", "Accessing databases.. ", "Fixing quantum particles.. ", "Solving for y.. ", "Hacking into myself.. ", "Breaking everything.. "};
-        for (int i = 1; i < 20; i = i) {
-            int numberOfSeconds = rand.nextInt(4) + 1;
-            try {
-                Thread.sleep(numberOfSeconds * 1000);
-            } catch (InterruptedException ie) {
-                Thread.currentThread().interrupt();
-            }
-            i += numberOfSeconds;
-            if (i > 20) {
-                i = 20;
-            }
-            System.out.println(initializingValuesText[rand.nextInt(initializingValuesText.length)] + i * 5 + "%");
-        }*/
-
         String action = mainMenu();
         switch (action) {
             case "start game":
